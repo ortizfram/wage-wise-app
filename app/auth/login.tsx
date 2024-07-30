@@ -20,7 +20,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        `${RESP_URL}/api/users/login`,  
+        `${RESP_URL}/api/users/login`,
         {
           email,
           password,
@@ -31,7 +31,7 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        await AsyncStorage.setItem("token",response.data.token);
+        await AsyncStorage.setItem("token", response.data.token);
         console.log("Logged in successfully");
         router.push("/"); // Navigate to home page
       }
@@ -74,7 +74,13 @@ const Login = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Pressable onPress={handleLogin} style={styles.button}>
+      <Pressable
+        onPress={() => {
+          console.log("login button pressed");
+          handleLogin();
+        }}
+        style={styles.button}
+      >
         <Text style={styles.textButton}>Login</Text>
       </Pressable>
       <Pressable style={styles.link}>

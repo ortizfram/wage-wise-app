@@ -1,13 +1,7 @@
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  Pressable,
-} from "react-native";
+import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
 import RESP_URL from "../../config";
 
 const Signup = () => {
@@ -17,18 +11,22 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post(`${RESP_URL}/api/users/register`, {
-        email,
-        password,
-      }, {
-        withCredentials: true,
-      });
-  
+      const response = await axios.post(
+        `${RESP_URL}/api/users/register`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
       if (response.status === 201) {
         console.log("Signed up successfully");
         router.push("/auth/login");
       } else {
-        console.log("error")
+        console.log("error");
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
@@ -73,7 +71,13 @@ const Signup = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Pressable onPress={handleSignup} style={styles.button}>
+      <Pressable
+        onPress={() => {
+          console.log("Signup button pressed");
+          handleSignup();
+        }}
+        style={styles.button}
+      >
         <Text style={styles.textButton}>Signup</Text>
       </Pressable>
       <Pressable style={styles.link}>
