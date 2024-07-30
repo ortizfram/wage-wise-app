@@ -1,28 +1,50 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import SettingsScreen from "../(tabs)/settings"; // Adjust the import path as necessary
+import HomeScreen from "../(tabs)/index"; // Adjust the import path as necessary
+import { MaterialIcons } from "@expo/vector-icons";
+import DashboardScreen from "./dashboard";
 
-import { TabBarIcon } from '@/components/navigation/TabBarIcon';
-import { Colors } from '@/constants/Colors';
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Tab = createBottomTabNavigator();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
+export default function AppTabs() {
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-      }}>
-      <Tabs.Screen
-        name="index"
+    <Tab.Navigator>
+      <Tab.Screen
+        name="home"
+        component={HomeScreen}
         options={{
-          title: 'Home',
+          title: "Home",
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <MaterialIcons name={"home"} size={24} color={color} />
           ),
         }}
       />
-    </Tabs>
+      <Tab.Screen
+        name="dashboard"
+        component={DashboardScreen}
+        options={{
+          title: "Dashboard",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons
+              name="dashboard" // Use the appropriate icon name for your dashboard
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="settings"
+        component={SettingsScreen}
+        options={{
+          title: "Settings",
+          tabBarIcon: ({ color, focused }) => (
+            <MaterialIcons name={"settings"} size={24} color={color} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 }
