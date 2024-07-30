@@ -12,6 +12,7 @@ const Login = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.appname}>WAGE WISE</Text>
       <Text style={styles.header}>Login</Text>
       <TextInput
         style={styles.input}
@@ -45,6 +46,10 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     marginBottom: 24,
+  },
+  appname: {
+    fontSize: 30,
+    marginBottom: 15,
   },
   input: {
     width: '100%',
