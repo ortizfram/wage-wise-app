@@ -19,22 +19,25 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(
-        `${RESP_URL}/api/users/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (response.status === 200) {
-        await AsyncStorage.setItem("token", response.data.token);
-        console.log("Logged in successfully");
-        router.push("/"); // Navigate to home page
-      }
+      const response = await axios
+        .post(
+          `${RESP_URL}/api/users/login`,
+          {
+            email,
+            password,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then(async (response) => {
+          if (response.status === 200) {
+            await AsyncStorage.setItem("token", response.data.token);
+            console.log("Logged in successfully");
+            router.push("/"); // Navigate to home page
+          }
+        })
+        .catch((error) => console.log(error));
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response) {

@@ -10,28 +10,27 @@ const Signup = () => {
   const [password, setPassword] = useState("");
 
   const handleSignup = async () => {
+    console.log("Handling signup");
     try {
       const response = await axios.post(
         `${RESP_URL}/api/users/register`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
+        { email:email, password:password },
+        { withCredentials: true }
       );
-
+  
+      console.log("Signup response:", response);
+  
       if (response.status === 201) {
         console.log("Signed up successfully");
         router.push("/auth/login");
       } else {
-        console.log("error");
+        console.log("Unexpected status code:", response.status);
       }
-    } catch (error: unknown) {
+    } catch (error) {
+      console.error("Signup error:", error);
       if (axios.isAxiosError(error)) {
-        // Axios specific error handling
         if (error.response) {
+          console.error("Response error:", error.response.data);
           if (error.response.status === 409) {
             alert("User already exists");
           } else if (error.response.status === 400) {
@@ -39,18 +38,15 @@ const Signup = () => {
           } else {
             alert("Error signing up");
           }
-          console.log(error.response.data.message);
         } else {
           alert("Error signing up");
-          console.log(error.message);
         }
       } else {
-        // Generic error handling
         alert("Error signing up");
-        console.log((error as Error).message);
       }
     }
   };
+  
 
   return (
     <View style={styles.container}>
