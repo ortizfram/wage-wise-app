@@ -1,4 +1,5 @@
-import { Link } from "expo-router";
+import axios from "axios";
+import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -6,16 +7,31 @@ import {
   View,
   TextInput,
   Button,
-  TouchableOpacity,
+  Pressable,
 } from "react-native";
+import RESP_URL from "../../config";
 
 const Signup = () => {
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignup = () => {
-    console.log("Signup Email:", email);
-    console.log("Signup Password:", password);
+  const handleSignup = async () => {
+    try {
+      const response = await axios.post(`${RESP_URL}/api/users/signup`, {
+        email: email,
+        password: password,
+      });
+
+      if (response.status === 201) {
+        console.log("signed up successfully");
+        router.push("/auth/login"); // Navigate to home page
+      } else {
+        console.log("Error signing up");
+      }
+    } catch (error) {
+      alert("Wrong Email or Password");
+    }
   };
 
   return (
@@ -27,7 +43,7 @@ const Signup = () => {
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
-        keyboardType="email-address"
+        inputMode="email"
         autoCapitalize="none"
       />
       <TextInput
@@ -37,10 +53,14 @@ const Signup = () => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      <Button title="Signup" onPress={handleSignup} />
-      <TouchableOpacity>
-        <Text style={{ color: "blue" }}>Already have an account</Text>
-      </TouchableOpacity>
+      <Pressable onPress={handleSignup} style={styles.button}>
+        <Text style={styles.textButton}>Signup</Text>
+      </Pressable>
+      <Pressable style={styles.link}>
+        <Link href="/auth/login">
+          <Text style={{ color: "blue" }}>Already have an account</Text>
+        </Link>
+      </Pressable>
     </View>
   );
 };
@@ -48,6 +68,9 @@ const Signup = () => {
 export default Signup;
 
 const styles = StyleSheet.create({
+  link:{
+    marginTop:20
+  },
   container: {
     flex: 1,
     justifyContent: "center",
@@ -70,4 +93,11 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
   },
+  button:{
+    padding:20,
+    backgroundColor:'blue',
+  },
+  textButton:{
+    color:"#e3e3e3"
+  }
 });
