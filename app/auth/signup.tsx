@@ -18,10 +18,12 @@ const Signup = () => {
   const handleSignup = async () => {
     try {
       const response = await axios.post(`${RESP_URL}/api/users/register`, {
-        email: email,
-        password: password,
+        email,
+        password,
+      }, {
+        withCredentials: true,
       });
-
+  
       if (response.status === 201) {
         console.log("Signed up successfully");
         router.push("/auth/login");

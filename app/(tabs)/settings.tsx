@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable, Alert } from 'react-native';
 import axios from 'axios';
 import RESP_URL from "../../config";
 import { useRouter } from 'expo-router';
+import { removeToken } from '@/storage';
 
 const Settings = () => {
   const router = useRouter();
@@ -12,6 +13,7 @@ const Settings = () => {
       await axios.post(`${RESP_URL}/api/users/logout`, {}, {
         withCredentials: true, // Ensure cookies are sent
       });
+      await removeToken();
       // Clear local authentication state if necessary
       console.log("Logged out successfully");
       router.push("/auth/login"); // Redirect to login page

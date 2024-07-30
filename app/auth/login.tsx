@@ -1,6 +1,7 @@
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
+import { storeToken } from "../../storage";
 import {
   StyleSheet,
   Text,
@@ -18,14 +19,19 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post(`${RESP_URL}/api/users/login`, {
-        email: email,
-        password: password,
-      }, {
-        withCredentials: true, // Ensure cookies are sent
-      });
+      const response = await axios.post(
+        `${RESP_URL}/api/users/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 200) {
+        await storeToken(response.data.token); // Store the token
         console.log("Logged in successfully");
         router.push("/"); // Navigate to home page
       }
