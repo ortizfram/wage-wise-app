@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import axios from "axios";
 import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
-import { useRouter } from "expo-router";
-import { getToken } from "../../storage";
+import { Link, useRouter } from "expo-router";
 import localforage from "localforage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -16,38 +15,12 @@ const HomeScreen = () => {
   const router = useRouter();
 
   const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const testLocalForage = async () => {
-      try {
-        await localforage.setItem('testKey', 'testValue');
-        const value = await localforage.getItem('testKey');
-        console.log('LocalForage Test Value:', value);
-        await localforage.removeItem('testKey');
-      } catch (error) {
-        console.error('LocalForage Test Error:', error);
-      }
-    };
-    
-    testLocalForage();
-
-    const testAsyncStorage = async () => {
-      try {
-        await AsyncStorage.setItem('testKey', 'testValue');
-        const value = await AsyncStorage.getItem('testKey');
-        console.log('AsyncStorage Test Value:', value);
-        await AsyncStorage.removeItem('testKey');
-      } catch (error) {
-        console.error('AsyncStorage Test Error:', error);
-      }
-    };
-    
-    testAsyncStorage();
-
     const fetchUserData = async () => {
       try {
-        const token = await getToken();
+        const token = await AsyncStorage.getItem("token");
         const response = await axios.get(`${RESP_URL}/api/users/profile`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,6 +28,7 @@ const HomeScreen = () => {
           withCredentials: true,
         });
         setUser(response.data); // Set the user state
+        setIsLoading(false);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error("Axios Error:", error.message);
@@ -68,10 +42,9 @@ const HomeScreen = () => {
         setIsLoading(false); // Ensure loading state is updated
       }
     };
-  
+
     fetchUserData();
   }, []);
-  
 
   if (isLoading) {
     return (
@@ -84,7 +57,9 @@ const HomeScreen = () => {
   if (!user) {
     return (
       <View style={styles.container}>
-        <Text>Please log in</Text>
+        <Link href="/auth/login" style={styles.link}>
+          <Text>Please log in</Text>
+        </Link>
       </View>
     );
   }
@@ -101,6 +76,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  link: {
+    color: "blue",
   },
 });
 

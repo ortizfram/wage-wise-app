@@ -1,7 +1,6 @@
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
 import React, { useState } from "react";
-import { storeToken } from "../../storage";
 import {
   StyleSheet,
   Text,
@@ -11,6 +10,7 @@ import {
   Pressable,
 } from "react-native";
 import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Login = () => {
   const router = useRouter();
@@ -20,7 +20,7 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        `${RESP_URL}/api/users/login`,
+        `${RESP_URL}/api/users/login`,  
         {
           email,
           password,
@@ -31,7 +31,7 @@ const Login = () => {
       );
 
       if (response.status === 200) {
-        await storeToken(response.data.token); // Store the token
+        await AsyncStorage.setItem("token",response.data.token);
         console.log("Logged in successfully");
         router.push("/"); // Navigate to home page
       }

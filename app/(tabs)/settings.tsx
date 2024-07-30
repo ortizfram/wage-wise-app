@@ -1,19 +1,23 @@
-import React from 'react';
-import { StyleSheet, Text, View, Pressable, Alert } from 'react-native';
-import axios from 'axios';
+import React from "react";
+import { StyleSheet, Text, View, Pressable, Alert } from "react-native";
+import axios from "axios";
 import RESP_URL from "../../config";
-import { useRouter } from 'expo-router';
-import { removeToken } from '@/storage';
+import { useRouter } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Settings = () => {
   const router = useRouter();
 
   const handleLogout = async () => {
     try {
-      await axios.post(`${RESP_URL}/api/users/logout`, {}, {
-        withCredentials: true, // Ensure cookies are sent
-      });
-      await removeToken();
+      await axios.post(
+        `${RESP_URL}/api/users/logout`,
+        {},
+        {
+          withCredentials: true, // Ensure cookies are sent
+        }
+      );
+      await AsyncStorage.setItem("token", "");
       // Clear local authentication state if necessary
       console.log("Logged out successfully");
       router.push("/auth/login"); // Redirect to login page
@@ -36,8 +40,8 @@ const Settings = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
   },
   header: {
@@ -48,7 +52,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   logoutText: {
-    color: 'red',
+    color: "red",
     fontSize: 18,
   },
 });

@@ -27,6 +27,8 @@ const Signup = () => {
       if (response.status === 201) {
         console.log("Signed up successfully");
         router.push("/auth/login");
+      } else {
+        console.log("error")
       }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
