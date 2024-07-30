@@ -6,7 +6,6 @@ import {
   Text,
   View,
   TextInput,
-  Button,
   Pressable,
 } from "react-native";
 import RESP_URL from "../../config";
@@ -18,19 +17,36 @@ const Signup = () => {
 
   const handleSignup = async () => {
     try {
-      const response = await axios.post(`${RESP_URL}/api/users/signup`, {
+      const response = await axios.post(`${RESP_URL}/api/users/register`, {
         email: email,
         password: password,
       });
 
       if (response.status === 201) {
-        console.log("signed up successfully");
-        router.push("/auth/login"); // Navigate to home page
-      } else {
-        console.log("Error signing up");
+        console.log("Signed up successfully");
+        router.push("/auth/login");
       }
-    } catch (error) {
-      alert("Wrong Email or Password");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        // Axios specific error handling
+        if (error.response) {
+          if (error.response.status === 409) {
+            alert("User already exists");
+          } else if (error.response.status === 400) {
+            alert("All fields are required");
+          } else {
+            alert("Error signing up");
+          }
+          console.log(error.response.data.message);
+        } else {
+          alert("Error signing up");
+          console.log(error.message);
+        }
+      } else {
+        // Generic error handling
+        alert("Error signing up");
+        console.log((error as Error).message);
+      }
     }
   };
 
@@ -68,8 +84,8 @@ const Signup = () => {
 export default Signup;
 
 const styles = StyleSheet.create({
-  link:{
-    marginTop:20
+  link: {
+    marginTop: 20,
   },
   container: {
     flex: 1,
@@ -93,11 +109,11 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
   },
-  button:{
-    padding:20,
-    backgroundColor:'blue',
+  button: {
+    padding: 20,
+    backgroundColor: "blue",
   },
-  textButton:{
-    color:"#e3e3e3"
-  }
+  textButton: {
+    color: "#e3e3e3",
+  },
 });

@@ -9,6 +9,7 @@ import {
   Button,
   Pressable,
 } from "react-native";
+import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
 
 const Login = () => {
   const router = useRouter();
@@ -17,19 +18,34 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios.post("/api/users/login", {
+      const response = await axios.post(`${RESP_URL}/api/users/login`, {
         email: email,
         password: password,
+      }, {
+        withCredentials: true, // Ensure cookies are sent
       });
 
       if (response.status === 200) {
         console.log("Logged in successfully");
         router.push("/"); // Navigate to home page
-      } else {
-        console.log("Error logging in");
       }
-    } catch (error) {
-      alert("Wrong Email or Password");
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            alert("Invalid credentials");
+          } else {
+            alert("Error logging in");
+          }
+          console.log(error.response.data.message);
+        } else {
+          alert("Error logging in");
+          console.log(error.message);
+        }
+      } else {
+        alert("Error logging in");
+        console.log((error as Error).message);
+      }
     }
   };
 
@@ -67,8 +83,8 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
-  link:{
-    marginTop:20
+  link: {
+    marginTop: 20,
   },
   container: {
     flex: 1,
@@ -92,11 +108,11 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 5,
   },
-  button:{
-    padding:20,
-    backgroundColor:'blue',
+  button: {
+    padding: 20,
+    backgroundColor: "blue",
   },
-  textButton:{
-    color:"#e3e3e3"
-  }
+  textButton: {
+    color: "#e3e3e3",
+  },
 });
