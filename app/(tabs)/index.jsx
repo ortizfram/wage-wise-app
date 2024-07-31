@@ -1,20 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, FlatList } from "react-native";
 import axios from "axios";
 import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
 import { Link, useRouter } from "expo-router";
-import localforage from "localforage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-interface User {
-  email: string;
-  _id: string;
-}
 
 const HomeScreen = () => {
   const router = useRouter();
 
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -54,11 +49,32 @@ const HomeScreen = () => {
     );
   }
 
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    axios
+      .get("https://jsonplaceholder.typicode.com/users")
+      .then((reponse) => setData(reponse.data))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const renderData = ({ item }) => {
+    return (
+      <View>
+        <Text>{item.name}</Text>
+      </View>
+    );
+  };
+
   if (!user) {
     return (
       <View style={styles.container}>
         <Link href="/auth/login" style={styles.link}>
           <Text>Please log in</Text>
+          <FlatList
+        data={data}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderData}
+      />
         </Link>
       </View>
     );

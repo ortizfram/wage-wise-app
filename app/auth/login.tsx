@@ -9,8 +9,8 @@ import {
   Button,
   Pressable,
 } from "react-native";
-import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
 
 const Login = () => {
   const router = useRouter();
@@ -19,25 +19,24 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await axios
-        .post(
-          `${RESP_URL}/api/users/login`,
-          {
-            email,
-            password,
-          },
-          {
-            withCredentials: true,
-          }
-        )
-        .then(async (response) => {
-          if (response.status === 200) {
-            await AsyncStorage.setItem("token", response.data.token);
-            console.log("Logged in successfully");
-            router.push("/"); // Navigate to home page
-          }
-        })
-        .catch((error) => console.log(error));
+      console.log("Sending login request");
+      const response = await axios.post(
+        `${RESP_URL}/api/users/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (response.status === 200) {
+        console.log("Response received, setting token");
+        await AsyncStorage.setItem("token", response.data.token);
+        console.log("Token set in AsyncStorage");
+        router.push("/"); // Navigate to home page
+      }
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -46,14 +45,14 @@ const Login = () => {
           } else {
             alert("Error logging in");
           }
-          console.log(error.response.data.message);
+          console.log("Error response data:", error.response.data.message);
         } else {
           alert("Error logging in");
-          console.log(error.message);
+          console.log("Error message:", error.message);
         }
       } else {
         alert("Error logging in");
-        console.log((error as Error).message);
+        console.log("Error:", (error as Error).message);
       }
     }
   };
