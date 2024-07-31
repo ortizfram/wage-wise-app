@@ -6,12 +6,12 @@ import { RESP_URL } from "@/config";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const register = async (email, password) => {
     console.log("Handling signup");
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const res = await axios.post(
         `${RESP_URL}/api/users/register`,
@@ -45,13 +45,11 @@ export const AuthProvider = ({ children }) => {
         alert("Error signing up");
       }
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={register}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={register}>{children}</AuthContext.Provider>
   );
 };

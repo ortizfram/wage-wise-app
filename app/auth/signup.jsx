@@ -16,6 +16,7 @@ const Signup = () => {
   const [password, setPassword] = useState(null);
 
   const register = useContext(AuthContext);
+  const router = useRouter();
 
   return (
     <View style={styles.container}>
