@@ -10,8 +10,8 @@ import {
   Pressable,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
 import { AuthContext } from "@/context/AuthContext";
+import { RESP_URL } from "@/config";
 
 const Login = () => {
   const router = useRouter();
