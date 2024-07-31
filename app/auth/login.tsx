@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,11 +11,13 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RESP_URL from "../../config"; // Assuming this config file exists and exports the base URL
+import { AuthContext } from "@/context/AuthContext";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const val = useContext(AuthContext)
 
   const handleLogin = async () => {
     try {
@@ -61,6 +63,7 @@ const Login = () => {
     <View style={styles.container}>
       <Text style={styles.appname}>WAGE WISE</Text>
       <Text style={styles.header}>Login</Text>
+      <Text>{val}</Text>
       <TextInput
         style={styles.input}
         placeholder="Email"

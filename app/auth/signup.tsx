@@ -1,13 +1,17 @@
 import axios from "axios";
 import { Link, useRouter } from "expo-router";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, TextInput, Pressable } from "react-native";
 import RESP_URL from "../../config";
+import { AuthContext } from "@/context/AuthContext";
+
 
 const Signup = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const val = useContext(AuthContext)
+
 
   const handleSignup = async () => {
     console.log("Handling signup");
@@ -52,6 +56,8 @@ const Signup = () => {
     <View style={styles.container}>
       <Text style={styles.appname}>WAGE WISE</Text>
       <Text style={styles.header}>Signup</Text>
+      <Text>{val}</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
