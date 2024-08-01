@@ -1,36 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Pressable, Alert } from "react-native";
 import axios from "axios";
-import RESP_URL from "../../config";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { RESP_URL } from "@/config";
+import { AuthContext } from "@/context/AuthContext";
+import Spinnerr from "react-native-loading-spinner-overlay";
 
 const Settings = () => {
   const router = useRouter();
-
-  const handleLogout = async () => {
-    try {
-      await axios.post(
-        `${RESP_URL}/api/users/logout`,
-        {},
-        {
-          withCredentials: true, // Ensure cookies are sent
-        }
-      );
-      await AsyncStorage.setItem("token", "");
-      // Clear local authentication state if necessary
-      console.log("Logged out successfully");
-      router.push("/auth/login"); // Redirect to login page
-    } catch (error) {
-      console.error("Error logging out", error);
-      Alert.alert("Error", "Failed to log out. Please try again.");
-    }
-  };
+  const { userInfo, isLoading, logout } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
+      <Spinnerr visible={isLoading} />
       <Text style={styles.header}>Settings</Text>
-      <Pressable onPress={handleLogout} style={styles.logoutButton}>
+      <Text style={styles.account}>{userInfo ? userInfo.email : ""}</Text>
+
+      <Pressable onPress={logout} style={styles.logoutButton}>
         <Text style={styles.logoutText}>Logout</Text>
       </Pressable>
     </View>
@@ -43,6 +30,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 16,
+  },
+  account: {
+    color: "blue",
   },
   header: {
     fontSize: 24,

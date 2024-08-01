@@ -3,6 +3,7 @@ import axios from "axios";
 import { useRouter } from "expo-router";
 import { RESP_URL } from "@/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Header } from "react-native/Libraries/NewAppScreen";
 
 export const AuthContext = createContext();
 
@@ -97,7 +98,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      console.log("Sending logout request");
+      await axios
+        .post(`${RESP_URL}/api/users/logout`, {
+          headers: { Authorization: `Bearer ${userInfo.token}` },
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log(res.data)
+            AsyncStorage.removeItem("userInfo");
+            setUserInfo({});
+            setIsLoading(false);
+            alert("Logged out");
+            router.push("/auth/login");
+          }
+        })
+        .catch((e) => {
+          console.log(`logout error: ${e}`);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          alert(`Error loggin out: ${error.response.data.message}`);
+          console.log("Error response data:", error.response.data.message);
+        }
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{register,login,isLoading,userInfo}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{ register, login, logout, isLoading, userInfo }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
