@@ -12,58 +12,20 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "@/context/AuthContext";
 import { RESP_URL } from "@/config";
+import Spinnerr from "react-native-loading-spinner-overlay";
 
 const Login = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const val = useContext(AuthContext)
-
-  const handleLogin = async () => {
-    try {
-      console.log("Sending login request");
-      const response = await axios.post(
-        `${RESP_URL}/api/users/login`,
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      );
-
-      if (response.status === 200) {
-        console.log("Response received, setting token");
-        await AsyncStorage.setItem("token", response.data.token);
-        console.log("Token set in AsyncStorage");
-        router.push("/"); // Navigate to home page
-      }
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          if (error.response.status === 401) {
-            alert("Invalid credentials");
-          } else {
-            alert("Error logging in");
-          }
-          console.log("Error response data:", error.response.data.message);
-        } else {
-          alert("Error logging in");
-          console.log("Error message:", error.message);
-        }
-      } else {
-        alert("Error logging in");
-        console.log("Error:", (error as Error).message);
-      }
-    }
-  };
+  const { login, isLoading } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
       <Text style={styles.appname}>WAGE WISE</Text>
       <Text style={styles.header}>Login</Text>
-      <Text>{val}</Text>
+      <Spinnerr visible={isLoading} />
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -82,7 +44,7 @@ const Login = () => {
       <Pressable
         onPress={() => {
           console.log("login button pressed");
-          handleLogin();
+          login(email, password);
         }}
         style={styles.button}
       >

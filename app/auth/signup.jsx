@@ -15,12 +15,12 @@ const Signup = () => {
   const [email, setEmail] = useState(null);
   const [password, setPassword] = useState(null);
 
-  const register = useContext(AuthContext);
+  const {register, isLoading} = useContext(AuthContext);
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      {/* <Spinner visible={isLoading} /> */}
+      <Spinner visible={isLoading} />
       <View style={styles.wrapper}>
         <TextInput
           style={styles.input}

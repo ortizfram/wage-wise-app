@@ -2,11 +2,13 @@ import React, { createContext, useState } from "react";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { RESP_URL } from "@/config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
   const router = useRouter();
 
   const register = async (email, password) => {
@@ -22,7 +24,9 @@ export const AuthProvider = ({ children }) => {
       if (res.status === 201) {
         let userInfo = res.data;
         console.log(userInfo);
-        router.push("/auth/login");
+        setUserInfo(userInfo);
+        AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+        router.push("/");
       } else {
         console.log("Unexpected status code:", res.status);
       }
@@ -49,7 +53,51 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const login = async (email, password) => {
+    setIsLoading(true);
+    try {
+      console.log("Sending login request");
+      await axios
+        .post(
+          `${RESP_URL}/api/users/login`,
+          {
+            email,
+            password,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("Response received, setting token");
+            let userInfo = res.data;
+            console.log(userInfo);
+            setUserInfo(userInfo);
+            AsyncStorage.setItem("userInfo", JSON.stringify(userInfo));
+            setIsLoading(false);
+            router.push("/");
+          }
+        })
+        .catch((e) => {
+          console.log(`login error: ${e}`);
+          setIsLoading(false);
+        });
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          if (error.response.status === 401) {
+            alert("Invalid credentials");
+          } else {
+            alert(`Error logging in: ${error.response.data.message}`);
+            console.log("Error response data:", error.response.data.message);
+          }
+        }
+      }
+    }
+  };
+
   return (
-    <AuthContext.Provider value={register}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{register,login,isLoading,userInfo}}>{children}</AuthContext.Provider>
   );
 };
