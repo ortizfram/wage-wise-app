@@ -31,13 +31,15 @@ export default function RootLayout() {
     return null;
   }
 
-  const userInfo  = useContext(AuthContext);
+  const userInfo = useContext(AuthContext);
+  const splahLoading = useContext(AuthContext);
 
   return (
-
     <AuthProvider>
       <Stack>
-        {userInfo?.token ? (
+        {splahLoading ? (
+          <Stack.Screen name="splashScreen" options={{ headerShown: false }} />
+        ) : userInfo?.token ? (
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         ) : (
           <>
@@ -45,6 +47,7 @@ export default function RootLayout() {
             <Stack.Screen name="auth/login" options={{ headerShown: false }} />
           </>
         )}
+
         <Stack.Screen name="+not-found" />
       </Stack>
     </AuthProvider>
