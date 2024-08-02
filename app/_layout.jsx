@@ -34,7 +34,6 @@ export default function RootLayout() {
   const userInfo  = useContext(AuthContext);
 
   return (
-    // <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
 
     <AuthProvider>
       <Stack>
@@ -49,6 +48,5 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
     </AuthProvider>
-    // </ThemeProvider>
   );
 }

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "expo-router";
 import { RESP_URL } from "@/config";
@@ -9,6 +9,7 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
+  const [splashLoading, setSplashLoading] = useState(false);
   const [userInfo, setUserInfo] = useState({});
   const router = useRouter();
 
@@ -109,7 +110,7 @@ export const AuthProvider = ({ children }) => {
         })
         .then((res) => {
           if (res.status === 200) {
-            console.log(res.data)
+            console.log(res.data);
             AsyncStorage.removeItem("userInfo");
             setUserInfo({});
             setIsLoading(false);
@@ -131,9 +132,29 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const isLoggedIn = async () => {
+    try {
+      setSplashLoading(true);
+      let userInfo = await AsyncStorage.getItem("userInfo");
+      userInfo = JSON.parse(userInfo);
+      if (userInfo) {
+        setUserInfo(userInfo);
+      }
+
+      setSplashLoading(false);
+    } catch (e) {
+      setSplashLoading(false);
+      console.log(`is logged in error: ${e}`);
+    }
+  };
+
+  useEffect(()=>{
+    isLoggedIn()
+  },[])
+
   return (
     <AuthContext.Provider
-      value={{ register, login, logout, isLoading, userInfo }}
+      value={{ register, login, logout, isLoading, userInfo, splashLoading }}
     >
       {children}
     </AuthContext.Provider>
