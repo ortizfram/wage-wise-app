@@ -7,7 +7,7 @@ import DashboardScreen from "./dashboard";
 
 const Tab = createBottomTabNavigator();
 
-export default function AppTabs() {
+export default function AppTabs() {//(tabs)/_layout
   return (
     <Tab.Navigator>
       <Tab.Screen

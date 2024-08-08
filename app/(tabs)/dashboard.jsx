@@ -1,15 +1,19 @@
 import { StyleSheet, Text, View, Pressable, ScrollView } from "react-native";
 import React from "react";
+import { useRouter } from "expo-router";
 
 const Dashboard = () => {
+  const router = useRouter()
+  const orgName = "name";
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Dashboard</Text>
+        <Text style={styles.org}>Organization: {orgName}</Text>
       </View>
       <View style={styles.card}>
         <Text style={styles.cardTitle}>Manage roles (add,remove,update)</Text>
-        <Pressable style={styles.button}>
+        <Pressable style={styles.button} onPress={()=>router.push("/roles")}>
           <Text style={styles.buttonText}>Roles</Text>
         </Pressable>
       </View>
@@ -56,6 +60,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#121212", // Dark background color
     padding: 16,
+  },
+  org:{
+    color:"blue",
+    fontSize:20
   },
   header: {
     marginBottom: 24,
