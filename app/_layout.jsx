@@ -1,12 +1,7 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useContext, useEffect } from "react";
+import { useEffect, useContext } from "react";
 import "react-native-reanimated";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
@@ -31,25 +26,30 @@ export default function RootLayout() {
     return null;
   }
 
-  const userInfo = useContext(AuthContext);
-  const splahLoading = useContext(AuthContext);
-
   return (
     <AuthProvider>
-      <Stack>
-        {splahLoading ? (
-          <Stack.Screen name="splashScreen" options={{ headerShown: false }} />
-        ) : userInfo?.token ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        ) : (
-          <>
-            <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
-            <Stack.Screen name="auth/login" options={{ headerShown: false }} />
-          </>
-        )}
-
-        <Stack.Screen name="+not-found" />
-      </Stack>
+      <Layout />
     </AuthProvider>
+  );
+}
+
+function Layout() { //app/_layout
+  const { userInfo, splahLoading } = useContext(AuthContext);
+
+  return (
+    <Stack>
+      {splahLoading ? (
+        <Stack.Screen name="splashScreen" options={{ headerShown: false }} />
+      ) : userInfo?.token ? (
+        <Stack.Screen name="[orgId]/index" options={{ headerShown: false }} />
+      ) : (
+        <>
+          <Stack.Screen name="auth/signup" options={{ headerShown: false }} />
+          <Stack.Screen name="auth/login" options={{ headerShown: false }} />
+        </>
+      )}
+
+      <Stack.Screen name="+not-found" />
+    </Stack>
   );
 }

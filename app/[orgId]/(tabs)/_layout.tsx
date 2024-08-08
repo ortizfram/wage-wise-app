@@ -1,25 +1,15 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import SettingsScreen from "../(tabs)/settings"; // Adjust the import path as necessary
-import HomeScreen from "../(tabs)/index"; // Adjust the import path as necessary
+import SettingsScreen from "./settings"; // Adjust the import path as necessary
 import { MaterialIcons } from "@expo/vector-icons";
 import DashboardScreen from "./dashboard";
 
 const Tab = createBottomTabNavigator();
 
-export default function AppTabs() {//(tabs)/_layout
+export default function AppTabs() {
+  //[orgId]/(tabs)/_layout
   return (
     <Tab.Navigator>
-      <Tab.Screen
-        name="home"
-        component={HomeScreen}
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <MaterialIcons name={"home"} size={24} color={color} />
-          ),
-        }}
-      />
       <Tab.Screen
         name="dashboard"
         component={DashboardScreen}

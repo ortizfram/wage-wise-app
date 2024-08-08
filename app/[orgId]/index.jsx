@@ -12,7 +12,7 @@ import Spinnerr from "react-native-loading-spinner-overlay";
 import { AuthContext } from "@/context/AuthContext";
 
 const HomeScreen = () => {
-  //(tabs)/index
+  //[orgId]/index
   const router = useRouter();
 
   const { isLoading, userInfo } = useContext(AuthContext);
