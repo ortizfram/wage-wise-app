@@ -17,6 +17,12 @@ const Settings = () => {
       <Text style={styles.header}>Settings</Text>
       <Text style={styles.account}>{userInfo ? userInfo.email : ""}</Text>
 
+      <Pressable>
+        <Text>configure alerts</Text>
+      </Pressable>
+      <Pressable>
+        <Text>Change payment method</Text>
+      </Pressable>
       <Pressable onPress={logout} style={styles.logoutButton}>
         <Text style={styles.logoutText}>Logout</Text>
       </Pressable>
